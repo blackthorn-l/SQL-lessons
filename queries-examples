@@ -1,0 +1,145 @@
+/* a query with re-naming, IF-function and operations with columns */
+select 
+  author, 
+  title, 
+  round(
+    if(
+      author = 'Булгаков М.А.', 
+      price * 1.1, 
+      if(
+        author = 'Есенин С.А.', price * 1.05, 
+        price
+      )
+    ), 
+    2
+  ) as new_price 
+from 
+  book
+  
+/* a query with a condition */
+select 
+  author, 
+  title, 
+  price 
+from 
+  book 
+where 
+  amount < 10
+  
+/* a query with several conditions */
+select 
+  title, 
+  author, 
+  price, 
+  amount 
+from 
+  book 
+where 
+  (
+    price < 500 
+    or price > 600
+  ) 
+  and (price * amount >= 5000)
+  
+/* a query with several conditions and IN, BETWEEN operators */
+select 
+  title, 
+  author 
+from 
+  book 
+where 
+  (
+    amount in (2, 3, 5, 7)
+  ) 
+  and (
+    price between 540.50 
+    and 800
+  )
+  
+/* a query with sorting*/
+select 
+  author, 
+  title 
+from 
+  book 
+where 
+  amount between 2 
+  and 14 
+order by 
+  author desc, 
+  title asc
+  
+/* a query with LIKE-operator */
+select 
+  title, 
+  author 
+from 
+  book 
+where 
+  title like '_% _%' 
+  and author like '% %С.%' 
+order by 
+  title
+  
+/* a query with group functions MIN(), MAX(), AVG()*/
+select 
+  author, 
+  min(price) as Минимальная_цена, 
+  max(price) as Максимальная_цена, 
+  avg(price) as Средняя_цена 
+from 
+  book 
+group by 
+  author
+  
+/* a query with group functions, column calculations and renaming */
+select 
+  author, 
+  round(
+    sum(price * amount), 
+    2
+  ) as Стоимость, 
+  round(
+    sum(price * amount)* 0.18 /(1 + 0.18), 
+    2
+  ) as НДС, 
+  round(
+    sum(price * amount)/(1 + 0.18), 
+    2
+  ) as Стоимость_без_НДС 
+from 
+  book 
+group by 
+  author
+  
+/* another query with group functions, column calculations and renaming */
+select 
+  round(
+    avg(price), 
+    2
+  ) as Средняя_цена, 
+  round(
+    sum(price * amount), 
+    2
+  ) as Стоимость 
+from 
+  book 
+where 
+  amount between 5 
+  and 14
+  
+/* a query with renaming, conditions, calculations and groups*/
+select 
+  author, 
+  sum(price * amount) as Стоимость 
+from 
+  book 
+where 
+  title not like 'Идиот' 
+  and title not like 'Белая гвардия' 
+group by 
+  author 
+having 
+  sum(price * amount) > 5000 
+order by 
+  Стоимость desc
