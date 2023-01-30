@@ -128,7 +128,7 @@ where
   amount between 5 
   and 14
   
-/* a query with renaming, conditions, calculations and groups*/
+/* a query with renaming, conditions, calculations and groups */
 select 
   author, 
   sum(price * amount) as Стоимость 
@@ -143,3 +143,20 @@ having
   sum(price * amount) > 5000 
 order by 
   Стоимость desc
+
+/* a query with a subquery */
+select 
+  author, 
+  title, 
+  price 
+from 
+  book 
+where 
+  price <= (
+    select 
+      avg(price) 
+    from 
+      book
+  ) 
+order by 
+  price desc
