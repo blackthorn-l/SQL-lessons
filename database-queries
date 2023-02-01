@@ -7,6 +7,15 @@ create table book(
   amount INT
 )
 
+/* another example of creating a table */
+create table supply(
+  supply_id INT PRIMARY KEY AUTO_INCREMENT, 
+  title VARCHAR(50), 
+  author VARCHAR(30), 
+  price DECIMAL(8, 2), 
+  amount INT
+)
+
 /* adding values to the table */
 insert into book (title, author, price, amount) 
 values 
@@ -36,3 +45,120 @@ values
     "Достоевский Ф.М.", 
     799.01, 2
   );
+  
+/* another example of adding several rows to the table */
+insert into supply (title, author, price, amount) 
+values 
+  (
+    'Лирика', 'Пастернак Б.Л.', 
+    518.99, 2
+  ), 
+  (
+    'Черный человек', 'Есенин С.А.', 
+    570.20, 6
+  ), 
+  (
+    'Белая гвардия', 'Булгаков М.А.', 
+    540.50, 7
+  ), 
+  (
+    'Идиот', 'Достоевский Ф.М.', 
+    360.80, 3
+  )
+
+/* adding several rows to the table from another table with a condition */
+insert into book (title, author, price, amount) 
+select 
+  title, 
+  author, 
+  price, 
+  amount 
+from 
+  supply 
+where 
+  author not in (
+    'Булгаков М.А.', 'Достоевский Ф.М.'
+  );
+
+/* adding several rows to the table from another table with a condition using subquery */
+insert into book (title, author, price, amount) 
+select 
+  title, 
+  author, 
+  price, 
+  amount 
+from 
+  supply 
+where 
+  author not in (
+    select 
+      author 
+    from 
+      book
+  )
+
+/* an example of updating a value based on specific conditions */
+update 
+  book 
+set 
+  price = price * 0.9 
+where 
+  amount between 5 
+  and 10
+  
+/* an example of updating several values */
+update 
+  book 
+set 
+  price = if(buy = 0, price * 0.9, price), 
+  buy = if(buy > amount, amount, buy)
+  
+/* another example of updating several values based on specific conditions */
+update 
+  book, 
+  supply 
+set 
+  book.amount = book.amount + supply.amount, 
+  book.price = (book.price + supply.price) / 2 
+where 
+  book.title like supply.title
+  
+/* deleting values based on specific conditions */
+delete from 
+  supply 
+where 
+  author in (
+    select 
+      author 
+    from 
+      book 
+    group by 
+      author 
+    having 
+      sum(amount) > 10
+  )
+  
+/* creating a table based on information from another table */
+create table ordering as 
+select 
+  author, 
+  title, 
+  (
+    select 
+      floor(
+        avg(amount)
+      ) 
+    from 
+      book
+  ) as amount 
+from 
+  book 
+where 
+  amount < (
+    select 
+      floor(
+        avg(amount)
+      ) 
+    from 
+      book
+  )
