@@ -81,6 +81,20 @@ where
 order by 
   title
   
+/* another query with LIKE-operator */
+select 
+  name, 
+  city, 
+  per_diem, 
+  date_first, 
+  date_last 
+from 
+  trip 
+where 
+  name like '_%а _%' 
+order by 
+  date_last desc
+  
 /* a query with group functions MIN(), MAX(), AVG()*/
 select 
   author, 
