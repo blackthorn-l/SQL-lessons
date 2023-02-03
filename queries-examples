@@ -94,6 +94,30 @@ where
   name like '_%а _%' 
 order by 
   date_last desc
+
+/* a query with sorting and mathematical operation */
+select 
+  city, 
+  count(city) as Количество 
+from 
+  trip 
+group by 
+  city 
+order by 
+  city
+
+/* a query with LIMIT operator */
+select 
+  city, 
+  count(city) as Количество 
+from 
+  trip 
+group by 
+  city 
+order by 
+  Количество desc 
+limit 
+  2
   
 /* a query with group functions MIN(), MAX(), AVG()*/
 select 
