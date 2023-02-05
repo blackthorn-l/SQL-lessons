@@ -123,6 +123,54 @@ order by
   Длительность desc, 
   city desc
 
+/* a query with MONTH() function */
+select 
+  name, 
+  city, 
+  date_first, 
+  date_last 
+from 
+  trip 
+where 
+  month(date_first) = month(date_last) 
+order by 
+  city, 
+  name
+
+/* a query with MONTHNAME() function */
+select 
+  monthname(date_first) as Месяц, 
+  count(date_first) as Количество 
+from 
+  trip 
+group by 
+  monthname(date_first) 
+order by 
+  Количество desc, 
+  Месяц
+
+/* a query with DATEDIFF(), MONTH(), YEAR() functions */
+select 
+  name, 
+  city, 
+  date_first, 
+  (
+    (
+      datediff(date_last, date_first) + 1
+    ) * per_diem
+  ) as Сумма 
+from 
+  trip 
+where 
+  (
+    month(date_first) = 2 
+    or month(date_first) = 3
+  ) 
+  and year(date_first) = 2020 
+order by 
+  name, 
+  Сумма desc
+
 /* a query with LIMIT operator */
 select 
   city, 
@@ -292,4 +340,22 @@ where
       max(amount) 
     from 
       book
+  )
+
+/* a query with a subquery and DATEDIFF() function */
+select 
+  name, 
+  city, 
+  date_first, 
+  date_last 
+from 
+  trip 
+where 
+  datediff(date_last, date_first) = (
+    select 
+      min(
+        datediff(date_last, date_first)
+      ) 
+    from 
+      trip
   )
