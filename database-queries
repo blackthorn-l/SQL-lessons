@@ -16,6 +16,17 @@ create table supply(
   amount INT
 )
 
+/* and another example of creating a table */
+create table fine(
+	fine_id INT PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(30),
+	number_plate VARCHAR(6),
+	violation VARCHAR(50),
+	sum_fine DECIMAL(8, 2),
+	date_violation DATE,
+	date_payment DATE
+)
+
 /* adding values to the table */
 insert into book (title, author, price, amount) 
 values 
@@ -64,6 +75,28 @@ values
   (
     'Идиот', 'Достоевский Ф.М.', 
     360.80, 3
+  )
+
+/* and another example of adding several rows to the table */
+insert into fine (
+  name, number_plate, violation, sum_fine, 
+  date_violation, date_payment
+) 
+values 
+  (
+    'Баранов П.Е.', 'Р523ВТ', 
+    'Превышение скорости(от 40 до 60)', 
+    null, '2020-02-14', null
+  ), 
+  (
+    'Абрамова К.А.', 'О111АВ', 
+    'Проезд на запрещающий сигнал', 
+    null, '2020-02-23', null
+  ), 
+  (
+    'Яковлев Г.Р.', 'Т330ТТ', 
+    'Проезд на запрещающий сигнал', 
+    null, '2020-03-03', null
   )
 
 /* adding several rows to the table from another table with a condition */
@@ -122,6 +155,25 @@ set
   book.price = (book.price + supply.price) / 2 
 where 
   book.title like supply.title
+  
+/* an example of updating several values based on specific conditions and using aliases */
+update 
+  fine 
+set 
+  sum_fine = (
+    if(
+      sum_fine is null, 
+      (
+        select 
+          sum_fine 
+        from 
+          traffic_violation as trv 
+        where 
+          trv.violation = fine.violation
+      ), 
+      sum_fine
+    )
+  )
   
 /* deleting values based on specific conditions */
 delete from 
