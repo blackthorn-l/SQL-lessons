@@ -247,6 +247,24 @@ having
 order by 
   Стоимость desc
 
+/* a query with calculations and groups */
+select 
+  name, 
+  number_plate, 
+  violation 
+from 
+  fine 
+group by 
+  name, 
+  violation, 
+  number_plate 
+having 
+  count(violation) >= 2 
+order by 
+  name, 
+  number_plate, 
+  violation
+
 /* a query with a subquery */
 select 
   author, 
@@ -318,7 +336,7 @@ where
     having 
       count(amount) = 1
   )
-  
+
 /* another use of subquery with ANY operator */
 select 
   title, 
