@@ -155,7 +155,26 @@ set
   book.price = (book.price + supply.price) / 2 
 where 
   book.title like supply.title
-  
+
+/* and another example of updating several values based on specific conditions */
+update 
+  fine as f, 
+  payment as p 
+set 
+  f.date_payment = p.date_payment, 
+  f.sum_fine = if(
+    (
+      p.date_payment - p.date_violation <= 20
+    ), 
+    (f.sum_fine / 2), 
+    f.sum_fine
+  ) 
+where 
+  p.name = f.name 
+  and p.number_plate = f.number_plate 
+  and p.violation = f.violation 
+  and p.date_violation = f.date_violation
+
 /* an example of updating several values based on specific conditions and using aliases */
 update 
   fine 
