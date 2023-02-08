@@ -27,6 +27,44 @@ create table fine(
 	date_payment DATE
 )
 
+/* creating a table based on information from another table */
+create table ordering as 
+select 
+  author, 
+  title, 
+  (
+    select 
+      floor(
+        avg(amount)
+      ) 
+    from 
+      book
+  ) as amount 
+from 
+  book 
+where 
+  amount < (
+    select 
+      floor(
+        avg(amount)
+      ) 
+    from 
+      book
+  )
+
+/* another example of creating a table based on information from another table */
+create table back_payment as 
+select 
+  name, 
+  number_plate, 
+  violation, 
+  sum_fine, 
+  date_violation 
+from 
+  fine 
+where 
+  date_payment is null
+
 /* adding values to the table */
 insert into book (title, author, price, amount) 
 values 
@@ -208,28 +246,13 @@ where
     having 
       sum(amount) > 10
   )
-  
-/* creating a table based on information from another table */
-create table ordering as 
-select 
-  author, 
-  title, 
-  (
-    select 
-      floor(
-        avg(amount)
-      ) 
-    from 
-      book
-  ) as amount 
-from 
-  book 
+
+/* another example of deleting values based on specific conditions */
+delete from 
+  fine 
 where 
-  amount < (
-    select 
-      floor(
-        avg(amount)
-      ) 
-    from 
-      book
-  )
+  date_violation < '2020-02-01';
+select 
+  * 
+from 
+  fine
