@@ -300,7 +300,21 @@ where
   ) 
 order by 
   price
-  
+
+/* an example with a subquery and MAX() function */
+select 
+  model, 
+  price 
+from 
+  printer 
+where 
+  price = (
+    select 
+      max(price) 
+    from 
+      printer
+  )
+
 /* use of subquery with IN operator */
 select 
   author, 
