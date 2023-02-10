@@ -351,6 +351,18 @@ where
       count(amount) = 1
   )
 
+/* a query with GROUP BY and HAVING clauses */
+select 
+  maker, 
+  max(type) 
+from 
+  product 
+group by 
+  maker 
+having 
+  count(distinct type) = 1 
+  and count(model) > 1
+
 /* another use of subquery with ANY operator */
 select 
   title, 
