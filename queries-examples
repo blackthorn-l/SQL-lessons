@@ -403,3 +403,29 @@ where
     from 
       trip
   )
+
+/* a query that shows makers with the highest and the lowest number of models  */
+select 
+  maker, 
+  count(model) as Qty 
+from 
+  product 
+group by 
+  maker 
+having 
+  count(model) <= all(
+    select 
+      count(model) 
+    from 
+      product 
+    group by 
+      maker
+  ) 
+  or count(model) >= all(
+    select 
+      count(model) 
+    from 
+      product 
+    group by 
+      maker
+  )
