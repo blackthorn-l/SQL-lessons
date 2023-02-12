@@ -1,3 +1,9 @@
+/* creating the simplest table */
+create table author(
+  author_id INT PRIMARY KEY AUTO_INCREMENT, 
+  name_author VARCHAR(50)
+)
+
 /* creating a table */
 create table book(
   book_id INT PRIMARY KEY AUTO_INCREMENT, 
@@ -18,13 +24,13 @@ create table supply(
 
 /* and another example of creating a table */
 create table fine(
-	fine_id INT PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(30),
-	number_plate VARCHAR(6),
-	violation VARCHAR(50),
-	sum_fine DECIMAL(8, 2),
-	date_violation DATE,
-	date_payment DATE
+  fine_id INT PRIMARY KEY AUTO_INCREMENT, 
+  name VARCHAR(30), 
+  number_plate VARCHAR(6), 
+  violation VARCHAR(50), 
+  sum_fine DECIMAL(8, 2), 
+  date_violation DATE, 
+  date_payment DATE
 )
 
 /* creating a table based on information from another table */
@@ -69,72 +75,69 @@ where
 insert into book (title, author, price, amount) 
 values 
   (
-    "Мастер и Маргарита", 
-    "Булгаков М.А.", 670.99, 
-    3
+    "Мастер и Маргарита", "Булгаков М.А.", 670.99, 3
   )
   
 /* adding several rows to the table */
 insert into book (title, author, price, amount) 
 values 
   (
-    "Белая гвардия", "Булгаков М.А.", 
-    540.50, 5
+    "Белая гвардия", "Булгаков М.А.", 540.50, 5
   );
 insert into book (title, author, price, amount) 
 values 
   (
-    "Идиот", "Достоевский Ф.М.", 
-    460.00, 10
+    "Идиот", "Достоевский Ф.М.", 460.00, 10
   );
 insert into book (title, author, price, amount) 
 values 
   (
-    "Братья Карамазовы", 
-    "Достоевский Ф.М.", 
-    799.01, 2
+    "Братья Карамазовы", "Достоевский Ф.М.", 799.01, 2
   );
   
 /* another example of adding several rows to the table */
 insert into supply (title, author, price, amount) 
 values 
   (
-    'Лирика', 'Пастернак Б.Л.', 
-    518.99, 2
+    'Лирика', 'Пастернак Б.Л.', 518.99, 2
   ), 
   (
-    'Черный человек', 'Есенин С.А.', 
-    570.20, 6
+    'Черный человек', 'Есенин С.А.', 570.20, 6
   ), 
   (
-    'Белая гвардия', 'Булгаков М.А.', 
-    540.50, 7
+    'Белая гвардия', 'Булгаков М.А.', 540.50, 7
   ), 
   (
-    'Идиот', 'Достоевский Ф.М.', 
-    360.80, 3
+    'Идиот', 'Достоевский Ф.М.', 360.80, 3
   )
 
 /* and another example of adding several rows to the table */
-insert into fine (
-  name, number_plate, violation, sum_fine, 
-  date_violation, date_payment
-) 
+insert into fine (name, number_plate, violation, sum_fine, date_violation, date_payment) 
 values 
   (
-    'Баранов П.Е.', 'Р523ВТ', 
-    'Превышение скорости(от 40 до 60)', 
-    null, '2020-02-14', null
+    'Баранов П.Е.', 'Р523ВТ', 'Превышение скорости(от 40 до 60)', null, '2020-02-14', null
   ), 
   (
-    'Абрамова К.А.', 'О111АВ', 
-    'Проезд на запрещающий сигнал', 
-    null, '2020-02-23', null
+    'Абрамова К.А.', 'О111АВ', 'Проезд на запрещающий сигнал', null, '2020-02-23', null
   ), 
   (
-    'Яковлев Г.Р.', 'Т330ТТ', 
-    'Проезд на запрещающий сигнал', 
-    null, '2020-03-03', null
+    'Яковлев Г.Р.', 'Т330ТТ', 'Проезд на запрещающий сигнал', null, '2020-03-03', null
+  )
+
+/* the simplest example of adding several rows to the table */
+insert into author (name_author) 
+values 
+  (
+    'Булгаков М.А.',
+  ),
+  (
+    'Достоевский Ф.М.'
+  ), 
+  (
+    'Есенин С.А.'
+  ), 
+  (
+    'Пастернак Б.Л.'
   )
 
 /* adding several rows to the table from another table with a condition */
