@@ -1,17 +1,11 @@
 /* a simple join from Coursera course */
-select
-	distinct artist.name,
-	genre.name
+select 
+  distinct artist.name, 
+  genre.name 
 from 
-	artist
-join
-	album on
-		artist.artist_id = album.artist_id
-join
-	track on
-		album.album_id = track.album_id
-join
-	genre on
-		track.genre_id = genre.genre_id
-where
-	artist.name = 'AC/DC'
+  artist 
+  join album on artist.artist_id = album.artist_id 
+  join track on album.album_id = track.album_id 
+  join genre on track.genre_id = genre.genre_id 
+where 
+  artist.name = 'AC/DC'
