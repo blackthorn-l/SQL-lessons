@@ -1,4 +1,4 @@
-/* a simple join from Coursera course */
+/* a simple join from a Coursera course */
 select 
   distinct artist.name, 
   genre.name 
@@ -9,3 +9,16 @@ from
   join genre on track.genre_id = genre.genre_id 
 where 
   artist.name = 'AC/DC'
+
+/* a simple join from a Stepic course */
+select 
+  book.title, 
+  genre.name_genre, 
+  book.price 
+from 
+  book 
+  inner join genre on book.genre_id = genre.genre_id 
+where 
+  book.amount > 8 
+order by 
+  book.price desc
