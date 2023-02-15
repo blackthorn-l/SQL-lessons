@@ -10,7 +10,7 @@ from
 where 
   artist.name = 'AC/DC'
 
-/* a simple join from a Stepic course */
+/* a simple inner join from a Stepic course */
 select 
   book.title, 
   genre.name_genre, 
@@ -22,3 +22,12 @@ where
   book.amount > 8 
 order by 
   book.price desc
+
+/* a simple left join */
+select 
+  genre.name_genre 
+from 
+  genre 
+  left join book on genre.genre_id = book.genre_id 
+where 
+  book.genre_id is null
