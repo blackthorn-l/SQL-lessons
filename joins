@@ -31,3 +31,22 @@ from
   left join book on genre.genre_id = book.genre_id 
 where 
   book.genre_id is null
+
+/* a cross join and random date generator for 2020 (I know it can be done simplier, but it was the first thing I came up with) */
+select 
+  city.name_city, 
+  author.name_author, 
+  date_format(
+    from_unixtime(
+      rand() * (
+        unix_timestamp('2020-12-31') - unix_timestamp('2020-01-01')
+      ) + unix_timestamp('2020-01-01')
+    ), 
+    '%Y-%m-%d'
+  ) as Date 
+from 
+  city 
+  cross join author 
+order by 
+  city.name_city, 
+  Date desc
