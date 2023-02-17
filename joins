@@ -50,3 +50,17 @@ from
 order by 
   city.name_city, 
   Date desc
+
+/* multiple inner-joins */
+select
+  genre.name_genre,
+  book.title,
+  author.name_author
+from
+  genre
+  inner join book on genre.genre_id = book.genre_id
+  inner join author on author.author_id = book.author_id
+where
+  book.genre_id = 1
+order by
+  book.title
