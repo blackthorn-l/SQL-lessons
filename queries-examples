@@ -429,3 +429,14 @@ having
     group by 
       maker
   )
+
+/* selecting authors that write in one genre */
+select
+  author.name_author
+from
+  author inner join book
+  on author.author_id = book.author_id
+group by
+  author.name_author
+having
+  count(distinct book.genre_id) = 1
