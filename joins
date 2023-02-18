@@ -64,3 +64,18 @@ where
   book.genre_id = 1
 order by
   book.title
+
+/*  left join with grouping */
+select 
+  author.name_author, 
+  sum(book.amount) as Amount 
+from 
+  author 
+  left join book on author.author_id = book.author_id 
+group by 
+  author.name_author 
+having 
+  sum(book.amount) < 10 
+  or count(book.title) = 0 
+order by 
+  Amount
