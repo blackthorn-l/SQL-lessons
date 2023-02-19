@@ -65,7 +65,7 @@ where
 order by
   book.title
 
-/*  left join with grouping */
+/* left join with grouping */
 select 
   author.name_author, 
   sum(book.amount) as Amount 
@@ -79,3 +79,43 @@ having
   or count(book.title) = 0 
 order by 
   Amount
+
+/* inner joins with subquery */
+select 
+  book.title, 
+  author.name_author, 
+  genre.name_genre, 
+  book.price, 
+  book.amount 
+from 
+  book 
+  inner join author on author.author_id = book.author_id 
+  inner join genre on genre.genre_id = book.genre_id 
+where 
+  book.genre_id in (
+    select 
+      query_all_genres.genre_id 
+    from 
+      (
+        select 
+          genre_id, 
+          sum(amount) as genre_amount 
+        from 
+          book 
+        group by 
+          genre_id
+      ) query_all_genres 
+      inner join (
+        select 
+          genre_id, 
+          sum(amount) as max_amount 
+        from 
+          book 
+        group by 
+          genre_id 
+        limit 
+          1
+      ) query_max_amount on query_all_genres.genre_amount = query_max_amount.max_amount
+  ) 
+order by 
+  book.title
