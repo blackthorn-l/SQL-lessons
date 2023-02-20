@@ -119,3 +119,30 @@ where
   ) 
 order by 
   book.title
+
+/* an example of combined use of ON and USING clause */
+select 
+  supply.title as title, 
+  supply.author as author, 
+  (supply.amount + book.amount) as total_amount
+from 
+  supply 
+  inner join book using(price) 
+  inner join author on book.author_id = author.author_id
+
+/* an example of diffrent JOIN uses in one query */
+select
+  author.name_author as author,
+  genre.name_genre as genre,
+  count(book.title) as number_of_books
+from
+  author cross join genre
+  left join book on book.author_id = author.author_id
+  and book.genre_id = genre.genre_id
+group by
+  author, 
+  genre
+order by 
+  author,
+  genre,
+  number_of_books
