@@ -378,5 +378,115 @@ from
   and Member.course_id = Course.course_id 
 order by 
   Course.title, 
-  Member.role DESC, 
+  Member.role desc, 
   User.name
+
+/* updating several rows in 2 tables */
+update
+  book
+  inner join author using(author_id)
+  inner join supply on book.title = supply.title
+  and supply.author = author.name_author
+set 
+  book.amount = book.amount + supply.amount,
+  book.price = (book.price * book.amount + supply.price * supply.amount) / (book.amount + supply.amount),
+  supply.amount = 0
+where
+  book.price <> supply.price
+
+/* adding values based on joining two tables */
+insert into author (name_author) 
+select 
+  supply.author 
+from 
+  author 
+  right join supply on author.name_author = supply.author 
+where 
+  name_author is null
+
+/* adding several values based on joining two tables */
+insert into book (title, author_id, price, amount) 
+select 
+  title, 
+  author.author_id, 
+  price, 
+  amount 
+from 
+  supply 
+  inner join author on supply.author = author.name_author 
+where 
+  amount <> 0
+
+/* two queries to update two rows */
+update 
+  book 
+set 
+  genre_id = (
+    select 
+      genre_id 
+    from 
+      genre 
+    where 
+      name_genre = 'Poetry'
+  ) 
+where 
+  book_id = 10;
+  
+update 
+  book 
+set 
+  genre_id = (
+    select 
+      genre_id 
+    from 
+      genre 
+    where 
+      name_genre = 'Adventure'
+  ) 
+where 
+  book_id = 10;
+
+/* deleting from a table with a use of subquery */
+delete from 
+  author 
+where 
+  author_id in (
+    select 
+      author_id 
+    from 
+      book 
+    group by 
+      author_id 
+    having 
+      sum(amount) < 20
+  )
+
+/* another example of deleting from a table with a use of subquery */
+delete from 
+  genre 
+where 
+  genre_id in (
+    select 
+      genre_id 
+    from 
+      book 
+    group by 
+      genre_id 
+    having 
+      count(*) < 4
+  )
+
+/* deleting from a joined table with a use of subquery */
+delete from 
+  author using author 
+  inner join book using(author_id) 
+where 
+  genre_id in (
+    select 
+      genre_id 
+    from 
+      genre 
+    where 
+      name_genre like 'Poetry'
+  )
+
