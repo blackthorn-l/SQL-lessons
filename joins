@@ -146,3 +146,36 @@ order by
   author,
   genre,
   number_of_books
+
+/* three inner joins */
+select
+  buy_id,
+  book.title,
+  book.price,
+  buy_book.amount
+from
+  buy
+  inner join buy_book using(buy_id)
+  inner join book using(book_id)
+  inner join client using(client_id)
+where
+  client.name_client like 'Baranov Pavel'
+order by 
+  buy_id, 
+  book.title
+
+/* inner join, left join and COUNT() function */
+select
+  author.name_author,
+  title,
+  count(buy_book.book_id) as Количество
+from
+  book
+  inner join author using(author_id)
+  left join buy_book using(book_id)
+group by
+  title,
+  author.name_author
+order by 
+  author.name_author,
+  title
