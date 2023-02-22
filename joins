@@ -183,7 +183,7 @@ order by
 /* several inner joins and COUNT() function */
 select 
   name_city, 
-  count(name_city) as Количество 
+  count(name_city) as Amount 
 from 
   city 
   inner join client using(city_id) 
