@@ -179,3 +179,14 @@ group by
 order by 
   author.name_author,
   title
+
+/* several inner joins and COUNT() function */
+select 
+  name_city, 
+  count(name_city) as Количество 
+from 
+  city 
+  inner join client using(city_id) 
+  inner join buy using(client_id) 
+group by 
+  name_city
