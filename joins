@@ -190,3 +190,32 @@ from
   inner join buy using(client_id) 
 group by 
   name_city
+
+/* an inner join with several conditions */
+select 
+  buy_id, 
+  date_step_end 
+from 
+  buy_step 
+  inner join step using(step_id) 
+where 
+  date_step_end is not null 
+  and name_step like 'Payment'
+
+/* three inner joins, SUM() function and groupping */
+select
+  buy_book.buy_id,
+  client.name_client,
+  sum(buy_book.amount * book.price) as Стоимость
+from
+  buy_book
+  inner join book using(book_id)
+  inner join buy using(buy_id)
+  inner join client using(client_id)
+group by
+  buy_book.buy_id,
+  client.name_client
+order by
+  buy_book.buy_id
+
+
