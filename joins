@@ -206,7 +206,7 @@ where
 select
   buy_book.buy_id,
   client.name_client,
-  sum(buy_book.amount * book.price) as Стоимость
+  sum(buy_book.amount * book.price) as Cost
 from
   buy_book
   inner join book using(book_id)
@@ -218,4 +218,15 @@ group by
 order by
   buy_book.buy_id
 
-
+/* an inner join and several conditions */
+select 
+  buy_id, 
+  name_step 
+from 
+  buy_step 
+  inner join step using(step_id) 
+where 
+  date_step_beg is not null 
+  and date_step_end is null 
+order by 
+  buy_id
