@@ -500,3 +500,13 @@ from
   city 
 where 
   name_city like 'Москва'
+
+/* inserting a value without VALUES keyword */
+insert into buy (buy_description, client_id)
+select
+  'Contact me',
+  client_id
+from
+  client
+where
+  name_client like 'Popov Ilya'
