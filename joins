@@ -230,3 +230,32 @@ where
   and date_step_end is null 
 order by 
   buy_id
+
+/* four inner joins, several conditions and DATEDIFF() function */
+select 
+  buy_step.buy_id, 
+  datediff(
+    buy_step.date_step_end, buy_step.date_step_beg
+  ) as Delivery_days, 
+  if(
+    datediff(
+      buy_step.date_step_end, buy_step.date_step_beg
+    ) > city.days_delivery, 
+    (
+      datediff(
+        buy_step.date_step_end, buy_step.date_step_beg
+      ) - city.days_delivery
+    ), 
+    0
+  ) as Late_days
+from 
+  buy_step 
+  inner join step using(step_id) 
+  inner join buy using(buy_id) 
+  inner join client using(client_id) 
+  inner join city using(city_id) 
+where 
+  step.name_step like 'Transportation' 
+  and buy_step.date_step_end is not null 
+order by 
+  buy_step.buy_id
