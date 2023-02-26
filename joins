@@ -273,3 +273,69 @@ where
   name_author like 'Dostoevsky'
 order by 
   name_client
+
+/* joins, groupping and a subquery */
+select 
+  name_genre, 
+  sum(buy_book.amount) as books_amount 
+from 
+  genre 
+  inner join book using(genre_id) 
+  inner join buy_book using(book_id) 
+group by 
+  name_genre 
+having 
+  sum(buy_book.amount) = (
+    select 
+      max(ordered_amount) 
+    from 
+      (
+        select 
+          sum(buy_book.amount) as ordered_amount 
+        from 
+          genre 
+          join book using(genre_id) 
+          join buy_book using(book_id) 
+        group by 
+          name_genre
+      ) query_1
+  ) 
+order by 
+  books_amount desc
+
+/* joins, groupping, a subquery and UNION ALL opeartor */
+select 
+  year(date_payment) as Год, 
+  monthname(date_payment) as Месяц, 
+  sum(price * amount) as Сумма 
+from 
+  buy_archive 
+group by 
+  year(date_payment), 
+  monthname(date_payment) 
+union all 
+select 
+  year(date_step_end) as Год, 
+  monthname(date_step_end) as Месяц, 
+  sum(buy_book.amount * book.price) as Сумма 
+from 
+  buy_step 
+  join buy using(buy_id) 
+  join buy_book using(buy_id) 
+  join book using(book_id) 
+where 
+  date_step_end is not null 
+  and step_id in (
+    select 
+      step_id 
+    from 
+      step 
+    where 
+      name_step like 'Оплата'
+  ) 
+group by 
+  year(date_step_end), 
+  monthname(date_step_end) 
+order by 
+  Месяц, 
+  Год
