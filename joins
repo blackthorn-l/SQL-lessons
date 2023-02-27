@@ -339,3 +339,47 @@ group by
 order by 
   Месяц, 
   Год
+
+/* joins, groupping, a subquery and UNION ALL opeartor */
+select 
+  query_1.title, 
+  sum(query_1.Amount) as Amount, 
+  sum(query_1.Sum) as Sum 
+from 
+  (
+    select 
+      title, 
+      sum(buy_book.amount) as Amount, 
+      sum(buy_book.amount * price) as Sum 
+    from 
+      book 
+      join buy_book using(book_id) 
+      join buy using(buy_id) 
+      join buy_step using(buy_id) 
+    where 
+      date_step_end is not null 
+      and step_id in (
+        select 
+          step_id 
+        from 
+          step 
+        where 
+          name_step like 'Payment'
+      ) 
+    group by 
+      title 
+    union all 
+    select 
+      title, 
+      sum(buy_archive.amount) as Amount, 
+      sum(buy_archive.price * buy_archive.amount) as Sum 
+    from 
+      buy_archive 
+      join book using(book_id) 
+    group by 
+      title
+  ) query_1 
+group by 
+  query_1.title 
+order by 
+  Sum desc
