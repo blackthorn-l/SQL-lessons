@@ -510,3 +510,53 @@ from
   client
 where
   name_client like 'Popov Ilya'
+
+/* inserting two values with SELECT statement */
+insert into buy_book (buy_id, book_id, amount)
+select
+  5,
+  book_id,
+  2
+from 
+  book 
+where
+  title like 'Lyrics';
+insert into buy_book (buy_id, book_id, amount)
+select
+  5,
+  book_id,
+  1
+from 
+  book 
+where
+  title like 'The White Guard';
+
+/* updating a value with JOIN clause and a condition */
+update book
+  join buy_book using(book_id)
+set 
+  book.amount = book.amount - buy_book.amount
+where
+  buy_id = 5
+  
+/* creating a table with a select statement */
+create table buy_pay as
+select
+  title,
+  name_author,
+  price,
+  buy_book.amount,
+  sum(buy_book.amount * price) as Sum
+from 
+  author
+  join book using(author_id)
+  join buy_book using(book_id)
+where
+  buy_id = 5
+group by 
+  title,
+  name_author,
+  price,
+  buy_book.amount
+order by 
+  title
