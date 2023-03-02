@@ -587,3 +587,31 @@ from
   cross join step
 where 
   buy_id = 5
+
+/* two examples of updating a value in a table with and without the use of JOIN clause */
+-- 1
+update 
+  buy_step 
+set 
+  date_step_beg = '2020-04-12' 
+where 
+  buy_id = 5 
+  and step_id = (
+    select 
+      step_id 
+    from 
+      step 
+    where 
+      name_step like 'Payment'
+  );
+
+-- 2
+update 
+  buy_step 
+  join step using(step_id) 
+set 
+  date_step_beg = '2020-04-12' 
+where 
+  buy_id = 5 
+  and name_step like 'Payment';
+  
