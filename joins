@@ -383,3 +383,31 @@ group by
   query_1.title 
 order by 
   Sum desc
+
+/* joins and a condition */
+select
+  name_student,
+  date_attempt,
+  result
+from
+  student
+  join attempt on student.student_id = attempt.student_id
+  join subject on subject.subject_id = attempt.subject_id
+where
+  name_subject like 'Databases'
+order by
+  result desc
+  
+/* a left join and groupping */
+select
+  name_subject,
+  count(attempt_id) as Total_tries,
+  round(avg(attempt.result), 2) as Avg
+from 
+  subject
+  left join attempt on subject.subject_id = attempt.subject_id
+group by
+  name_subject
+order by
+  Avg desc
+
