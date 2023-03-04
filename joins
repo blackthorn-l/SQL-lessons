@@ -411,3 +411,36 @@ group by
 order by
   Avg desc
 
+/* joins and a condition with a subquery */
+select 
+  name_student, 
+  result 
+from 
+  attempt 
+  join student on attempt.student_id = student.student_id 
+where 
+  result = (
+    select 
+      max(result) 
+    from 
+      attempt
+  ) 
+order by 
+  name_student
+
+/* joins, groupping and DATEDIFF() function */
+select
+  name_student,
+  name_subject,
+  datediff(max(date_attempt), min(date_attempt)) as Days_count
+from
+  attempt 
+  join subject on attempt.subject_id = subject.subject_id
+  join student on attempt.student_id = student.student_id
+group by
+  name_student,
+  name_subject
+having
+  count(attempt_id) > 1
+order by
+  Days_count
