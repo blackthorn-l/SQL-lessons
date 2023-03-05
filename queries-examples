@@ -4,10 +4,10 @@ select
   title, 
   round(
     if(
-      author = 'Булгаков М.А.', 
+      author = 'M. Bulgakov', 
       price * 1.1, 
       if(
-        author = 'Есенин С.А.', price * 1.05, 
+        author = 'S. Yesenin', price * 1.05, 
         price
       )
     ), 
@@ -98,7 +98,7 @@ order by
 /* a query with sorting and mathematical operation */
 select 
   city, 
-  count(city) as Количество 
+  count(city) as Amount 
 from 
   trip 
 group by 
@@ -112,15 +112,15 @@ select
   city, 
   (
     datediff(date_last, date_first) + 1
-  ) as Длительность 
+  ) as Duration 
 from 
   trip 
 where 
   city not in (
-    'Москва', 'Санкт-Петербург'
+    'Moscow', 'Saint-Petersburg'
   ) 
 order by 
-  Длительность desc, 
+  Duration desc, 
   city desc
 
 /* a query with MONTH() function */
@@ -139,15 +139,15 @@ order by
 
 /* a query with MONTHNAME() function */
 select 
-  monthname(date_first) as Месяц, 
-  count(date_first) as Количество 
+  monthname(date_first) as Month, 
+  count(date_first) as Amount 
 from 
   trip 
 group by 
   monthname(date_first) 
 order by 
-  Количество desc, 
-  Месяц
+  Amount desc, 
+  Month
 
 /* a query with DATEDIFF(), MONTH(), YEAR() functions */
 select 
@@ -158,7 +158,7 @@ select
     (
       datediff(date_last, date_first) + 1
     ) * per_diem
-  ) as Сумма 
+  ) as Sum 
 from 
   trip 
 where 
@@ -169,27 +169,27 @@ where
   and year(date_first) = 2020 
 order by 
   name, 
-  Сумма desc
+  Sum desc
 
 /* a query with LIMIT operator */
 select 
   city, 
-  count(city) as Количество 
+  count(city) as Amount 
 from 
   trip 
 group by 
   city 
 order by 
-  Количество desc 
+  Amount desc 
 limit 
   2
   
 /* a query with group functions MIN(), MAX(), AVG()*/
 select 
   author, 
-  min(price) as Минимальная_цена, 
-  max(price) as Максимальная_цена, 
-  avg(price) as Средняя_цена 
+  min(price) as Min_price, 
+  max(price) as Max_price, 
+  avg(price) as Avg_price 
 from 
   book 
 group by 
@@ -201,15 +201,15 @@ select
   round(
     sum(price * amount), 
     2
-  ) as Стоимость, 
+  ) as Cost, 
   round(
     sum(price * amount)* 0.18 /(1 + 0.18), 
     2
-  ) as НДС, 
+  ) as Tax, 
   round(
     sum(price * amount)/(1 + 0.18), 
     2
-  ) as Стоимость_без_НДС 
+  ) as Cost_without_Tax 
 from 
   book 
 group by 
@@ -220,11 +220,11 @@ select
   round(
     avg(price), 
     2
-  ) as Средняя_цена, 
+  ) as Avg_price, 
   round(
     sum(price * amount), 
     2
-  ) as Стоимость 
+  ) as Cost 
 from 
   book 
 where 
@@ -234,18 +234,18 @@ where
 /* a query with renaming, conditions, calculations and groups */
 select 
   author, 
-  sum(price * amount) as Стоимость 
+  sum(price * amount) as Cost
 from 
   book 
 where 
-  title not like 'Идиот' 
-  and title not like 'Белая гвардия' 
+  title not like 'Idiot' 
+  and title not like 'White guard' 
 group by 
   author 
 having 
   sum(price * amount) > 5000 
 order by 
-  Стоимость desc
+  Cost desc
 
 /* a query with calculations and groups */
 select 
@@ -440,3 +440,23 @@ group by
   author.name_author
 having
   count(distinct book.genre_id) = 1
+
+/* a subquery and RAND() function */
+select 
+  question_id, 
+  name_question 
+from 
+  question 
+where 
+  subject_id = (
+    select 
+      subject_id 
+    from 
+      subject 
+    where 
+      name_subject like 'Databases'
+  ) 
+order by 
+  rand() 
+limit 
+  3
