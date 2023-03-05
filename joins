@@ -168,7 +168,7 @@ order by
 select
   author.name_author,
   title,
-  count(buy_book.book_id) as Количество
+  count(buy_book.book_id) as Amount
 from
   book
   inner join author using(author_id)
@@ -305,9 +305,9 @@ order by
 
 /* joins, groupping, a subquery and UNION ALL opeartor */
 select 
-  year(date_payment) as Год, 
-  monthname(date_payment) as Месяц, 
-  sum(price * amount) as Сумма 
+  year(date_payment) as Year, 
+  monthname(date_payment) as Month, 
+  sum(price * amount) as Sum 
 from 
   buy_archive 
 group by 
@@ -315,9 +315,9 @@ group by
   monthname(date_payment) 
 union all 
 select 
-  year(date_step_end) as Год, 
-  monthname(date_step_end) as Месяц, 
-  sum(buy_book.amount * book.price) as Сумма 
+  year(date_step_end) as Year, 
+  monthname(date_step_end) as Month, 
+  sum(buy_book.amount * book.price) as Sum 
 from 
   buy_step 
   join buy using(buy_id) 
@@ -331,14 +331,14 @@ where
     from 
       step 
     where 
-      name_step like 'Оплата'
+      name_step like 'Payment'
   ) 
 group by 
   year(date_step_end), 
   monthname(date_step_end) 
 order by 
-  Месяц, 
-  Год
+  Month, 
+  Year
 
 /* joins, groupping, a subquery and UNION ALL opeartor */
 select 
@@ -444,3 +444,17 @@ having
   count(attempt_id) > 1
 order by
   Days_count
+
+/* left join and groupping */
+select
+  name_subject,
+  count(distinct student_id) as Amount
+from 
+  subject
+  left join attempt on attempt.subject_id = subject.subject_id
+group by
+  name_subject
+order by
+  Amount desc,
+  name_subject
+  
