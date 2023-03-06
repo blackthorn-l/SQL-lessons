@@ -458,3 +458,54 @@ order by
   Amount desc,
   name_subject
   
+/* inner joins, IF() clause and a condition */
+select
+  name_question,
+  name_answer,
+  if(is_correct = 0, 'Wrong', 'Correct') as Result
+from
+  testing
+  join question on testing.question_id = question.question_id
+  join answer on testing.answer_id = answer.answer_id
+where
+  attempt_id = 7
+  
+/* inner joins, calculations and groupping */
+select
+  name_student,
+  name_subject,
+  date_attempt,
+  round(sum(is_correct) / 3 * 100, 2) as Result
+from
+  attempt
+  join subject on attempt.subject_id = subject.subject_id
+  join student on attempt.student_id = student.student_id
+  join testing on testing.attempt_id = attempt.attempt_id
+  join answer on testing.answer_id = answer.answer_id
+group by
+  name_student,
+  name_subject,
+  date_attempt
+order by
+  name_student,
+  date_attempt desc
+  
+/* inner joins, left join, calculations, CONCAT() function and groupping */
+select
+  name_subject,
+  concat(substring(name_question, 1, 30),'...') as Question,
+  count(testing.answer_id) as Total_answers,
+  round(sum(is_correct) / count(testing.answer_id) * 100, 2)  as Successful_tries
+from 
+  subject
+  join question on subject.subject_id = question.subject_id
+  join testing on question.question_id = testing.question_id
+  left join answer on testing.answer_id = answer.answer_id
+group by
+  name_subject,
+  name_question
+order by
+  name_subject,
+  Successful_tries desc,
+  name_question
+  
