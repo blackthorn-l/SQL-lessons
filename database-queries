@@ -615,3 +615,19 @@ where
   buy_id = 5 
   and name_step like 'Payment';
   
+/* inserting a value with the use of JOINs */
+insert into
+  attempt (student_id, subject_id, date_attempt)
+select
+  attempt.student_id,
+  attempt.subject_id,
+  now()
+from
+  attempt
+  join student on attempt.student_id = student.student_id
+  join subject on attempt.subject_id = subject.subject_id
+where
+  name_student like 'Pavel Baranov'
+  and name_subject like 'Databases'
+
+
