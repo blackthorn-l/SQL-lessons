@@ -1,58 +1,58 @@
 /* creating the simplest table */
 create table author(
-  author_id INT PRIMARY KEY AUTO_INCREMENT, 
-  name_author VARCHAR(50)
+  author_id int primary key auto_increment, 
+  name_author varchar(50)
 )
 
 /* creating a table */
 create table book(
-  book_id INT PRIMARY KEY AUTO_INCREMENT, 
-  title VARCHAR(50), 
-  author VARCHAR(30), 
-  price DECIMAL(8, 2), 
-  amount INT
+  book_id int primary key auto_increment, 
+  title varchar(50), 
+  author varchar(30), 
+  price decimal(8, 2), 
+  amount int
 )
 
 /* another example of creating a table */
 create table supply(
-  supply_id INT PRIMARY KEY AUTO_INCREMENT, 
-  title VARCHAR(50), 
-  author VARCHAR(30), 
-  price DECIMAL(8, 2), 
-  amount INT
+  supply_id int primary key auto_increment, 
+  title varchar(50), 
+  author varchar(30), 
+  price decimal(8, 2), 
+  amount int
 )
 
 /* and another example of creating a table */
 create table fine(
-  fine_id INT PRIMARY KEY AUTO_INCREMENT, 
-  name VARCHAR(30), 
-  number_plate VARCHAR(6), 
-  violation VARCHAR(50), 
-  sum_fine DECIMAL(8, 2), 
-  date_violation DATE, 
-  date_payment DATE
+  fine_id int primary key auto_increment, 
+  name varchar(30), 
+  number_plate varchar(6), 
+  violation varchar(50), 
+  sum_fine decimal(8, 2), 
+  date_violation date, 
+  date_payment date
 )
 
 /* creating a table with foreign keys */
 create table book (
-  book_id INT PRIMARY KEY AUTO_INCREMENT, 
-  title VARCHAR(50), 
-  author_id INT NOT NULL, 
-  genre_id INT, 
-  price DECIMAL(8, 2), 
-  amount INT, 
+  book_id int primary key auto_increment, 
+  title varchar(50), 
+  author_id int not null, 
+  genre_id int, 
+  price decimal(8, 2), 
+  amount int, 
   foreign key (author_id) references author (author_id), 
   foreign key (genre_id) references genre (genre_id)
 )
 
 /* creating a table with foreign keys with delete instructions */
 create table book (
-  book_id INT PRIMARY KEY AUTO_INCREMENT, 
-  title VARCHAR(50), 
-  author_id INT NOT NULL, 
-  genre_id INT, 
-  price DECIMAL(8, 2), 
-  amount INT, 
+  book_id int primary key auto_increment, 
+  title varchar(50), 
+  author_id int not null, 
+  genre_id int, 
+  price decimal(8, 2), 
+  amount int, 
   foreign key (author_id) references author (author_id) on delete cascade, 
   foreign key (genre_id) references genre (genre_id) on delete set null
 )
@@ -99,50 +99,50 @@ where
 insert into book (title, author, price, amount) 
 values 
   (
-    "Мастер и Маргарита", "Булгаков М.А.", 670.99, 3
+    "The Master and Margarita", "M. Bulgakov", 670.99, 3
   )
   
 /* adding several rows to the table */
 insert into book (title, author, price, amount) 
 values 
   (
-    "Белая гвардия", "Булгаков М.А.", 540.50, 5
+    "White Guard", "M. Bulgakov", 540.50, 5
   );
 insert into book (title, author, price, amount) 
 values 
   (
-    "Идиот", "Достоевский Ф.М.", 460.00, 10
+    "The Idiot", "F. Dostoevsky", 460.00, 10
   );
 insert into book (title, author, price, amount) 
 values 
   (
-    "Братья Карамазовы", "Достоевский Ф.М.", 799.01, 2
+    "The Brothers Karamazov", "F. Dostoevsky", 799.01, 2
   );
   
 /* another example of adding several rows to the table */
 insert into supply (title, author, price, amount) 
 values 
   (
-    'Лирика', 'Пастернак Б.Л.', 518.99, 2
+    'Poems', 'B. Pasternak', 518.99, 2
   ), 
   (
     'Черный человек', 'Есенин С.А.', 570.20, 6
   ), 
   (
-    'Белая гвардия', 'Булгаков М.А.', 540.50, 7
+    'White Guard', 'M. Bulgakov', 540.50, 7
   ), 
   (
-    'Идиот', 'Достоевский Ф.М.', 360.80, 3
+    'The Idiot', 'F. Dostoevsky', 360.80, 3
   )
 
 /* and another example of adding several rows to the table */
 insert into fine (name, number_plate, violation, sum_fine, date_violation, date_payment) 
 values 
   (
-    'Баранов П.Е.', 'Р523ВТ', 'Превышение скорости(от 40 до 60)', null, '2020-02-14', null
+    'P. Baranov', 'Р523ВТ', 'Exceeding speed limits (from 40 to 60)', null, '2020-02-14', null
   ), 
   (
-    'Абрамова К.А.', 'О111АВ', 'Проезд на запрещающий сигнал', null, '2020-02-23', null
+    'K. Abramove', 'О111АВ', 'Driving on a prohibition signal', null, '2020-02-23', null
   ), 
   (
     'Яковлев Г.Р.', 'Т330ТТ', 'Проезд на запрещающий сигнал', null, '2020-03-03', null
@@ -152,16 +152,16 @@ values
 insert into author (name_author) 
 values 
   (
-    'Булгаков М.А.',
+    'M. Bulgakov',
   ),
   (
-    'Достоевский Ф.М.'
+    'F. Dostoevsky'
   ), 
   (
     'Есенин С.А.'
   ), 
   (
-    'Пастернак Б.Л.'
+    'B. Pasternak'
   )
 
 /* adding several rows to the table from another table with a condition */
@@ -175,7 +175,7 @@ from
   supply 
 where 
   author not in (
-    'Булгаков М.А.', 'Достоевский Ф.М.'
+    'M. Bulgakov', 'F. Dostoevsky'
   )
 
 /* adding several rows to the table from another table with a condition using subquery */
@@ -205,7 +205,7 @@ values
     'Черный человек', 3, 2, 570.20, 6
   ), 
   (
-    'Лирика', 4, 2, 518.99, 2
+    'Poems', 4, 2, 518.99, 2
   )
 
 /* an example of updating a value based on specific conditions */
@@ -307,23 +307,23 @@ drop
 drop 
   table if exists Course;
 create table `User` (
-  user_id INTEGER NOT NULL AUTO_INCREMENT, 
-  name VARCHAR(128) UNIQUE, 
-  PRIMARY KEY(user_id)
-) engine = InnoDB CHARACTER SET = utf8;
+  user_id integer not null auto_increment, 
+  name varchar(128) unique, 
+  primary key(user_id)
+) engine = InnoDB character set = utf8;
 create table Course (
-  course_id INTEGER NOT NULL AUTO_INCREMENT, 
-  title VARCHAR(128) UNIQUE, 
-  PRIMARY KEY(course_id)
-) engine = InnoDB CHARACTER SET = utf8;
+  course_id integer not null auto_increment, 
+  title varchar(128) unique, 
+  primary key(course_id)
+) engine = InnoDB character set = utf8;
 create table Member (
-  user_id INTEGER, 
-  course_id INTEGER, 
-  role INTEGER, 
+  user_id integer, 
+  course_id integer, 
+  role integer, 
   constraint foreign key (user_id) references `User` (user_id) on delete cascade on update cascade, 
   constraint foreign key (course_id) references Course (course_id) on delete cascade on update cascade, 
-  PRIMARY KEY (user_id, course_id)
-) engine = InnoDB CHARACTER SET = utf8;
+  primary key (user_id, course_id)
+) engine = InnoDB character set = utf8;
 
 /* the second step on filling data */
 insert into user (name) 
