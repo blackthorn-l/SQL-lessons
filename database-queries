@@ -683,3 +683,28 @@ order by
 limit 
   3
 
+/* updating a value, calcualtions  */
+update 
+  attempt 
+set 
+  result = (
+    select 
+      round(
+        sum(is_correct) / 3 * 100
+      ) 
+    from 
+      testing 
+      join answer on testing.answer_id = answer.answer_id 
+    where 
+      attempt_id = 8
+  ) 
+where 
+  attempt_id = 8
+
+/* deleting values based on condition; cascade deleting  */
+delete from 
+  attempt 
+where 
+  date_attempt < '2020-05-01'
+
+/*   */
