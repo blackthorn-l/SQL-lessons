@@ -126,7 +126,7 @@ values
     'Poems', 'B. Pasternak', 518.99, 2
   ), 
   (
-    'Черный человек', 'Есенин С.А.', 570.20, 6
+    'A Dark Man', 'S. Yesenin', 570.20, 6
   ), 
   (
     'White Guard', 'M. Bulgakov', 540.50, 7
@@ -142,10 +142,10 @@ values
     'P. Baranov', 'Р523ВТ', 'Exceeding speed limits (from 40 to 60)', null, '2020-02-14', null
   ), 
   (
-    'K. Abramove', 'О111АВ', 'Driving on a prohibition signal', null, '2020-02-23', null
+    'K. Abramova', 'О111АВ', 'Driving on a prohibition signal', null, '2020-02-23', null
   ), 
   (
-    'Яковлев Г.Р.', 'Т330ТТ', 'Проезд на запрещающий сигнал', null, '2020-03-03', null
+    'G. Yakovlev', 'Т330ТТ', 'Driving on a prohibition signal', null, '2020-03-03', null
   )
 
 /* the simplest example of adding several rows to the table */
@@ -158,7 +158,7 @@ values
     'F. Dostoevsky'
   ), 
   (
-    'Есенин С.А.'
+    'S. Yesenin'
   ), 
   (
     'B. Pasternak'
@@ -199,10 +199,10 @@ where
 insert into book (title, author_id, genre_id, price, amount) 
 values 
   (
-    'Стихотворения и поэмы', 3, 2, 650.00, 15
+    'Poems and poesy', 3, 2, 650.00, 15
   ), 
   (
-    'Черный человек', 3, 2, 570.20, 6
+    'A Dark Man', 3, 2, 570.20, 6
   ), 
   (
     'Poems', 4, 2, 518.99, 2
@@ -565,8 +565,8 @@ order by
 create table buy_pay as
 select
   buy_id,
-  sum(buy_book.amount) as Количество,
-  sum(price * buy_book.amount) as Итого
+  sum(buy_book.amount) as Amount,
+  sum(price * buy_book.amount) as Total
 from
   buy_book
   join book using(book_id)
