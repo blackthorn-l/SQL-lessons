@@ -629,5 +629,57 @@ from
 where
   name_student like 'Pavel Baranov'
   and name_subject like 'Databases'
+  
+/* two examples of inserting values in a table with and without the use of JOIN clause */
+-- 1
+insert into testing (attempt_id, question_id) 
+select 
+  (
+    select 
+      max(attempt_id) 
+    from 
+      attempt
+  ), 
+  question_id 
+from 
+  question 
+where 
+  subject_id = (
+    select 
+      subject_id 
+    from 
+      attempt 
+    where 
+      attempt_id = (
+        select 
+          max(attempt_id) 
+        from 
+          attempt
+      )
+  ) 
+order by 
+  rand(question_id) 
+limit 
+  3
 
+-- 2
+insert into
+  testing (attempt_id, question_id)
+select
+  attempt_id,
+  question_id
+from
+  attempt
+  join question on attempt.subject_id = question.subject_id 
+where
+  attempt_id = (
+  	select 
+      max(attempt_id)
+    from 
+      attempt
+  	)
+order by
+  rand(question_id)
+limit 
+  3
 
