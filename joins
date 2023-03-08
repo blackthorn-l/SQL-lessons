@@ -509,3 +509,15 @@ order by
   Successful_tries desc,
   name_question
   
+/* inner joins and a condition */
+select
+  name_enrollee
+from
+  enrollee
+  join program_enrollee on enrollee.enrollee_id = program_enrollee.enrollee_id
+  join program on program_enrollee.program_id = program.program_id
+where
+  name_program like 'Mechatronics and Robotics'
+order by
+  name_enrollee
+  
