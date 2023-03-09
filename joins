@@ -520,4 +520,17 @@ where
   name_program like 'Mechatronics and Robotics'
 order by
   name_enrollee
-  
+
+/* inner joins and a condition */
+select
+  name_program
+from
+  program 
+  join program_subject on program.program_id = program_subject.program_id
+  join subject on program_subject.subject_id = subject.subject_id
+where
+  name_subject like 'Informatics'
+order by
+  name_program desc
+
+
