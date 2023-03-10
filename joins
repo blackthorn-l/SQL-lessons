@@ -533,4 +533,32 @@ where
 order by
   name_program desc
 
+/* inner join, calculations and groupping */
+select
+  name_subject,
+  count(enrollee_id) as Amount,
+  max(result) as Max,
+  min(result) as Min,
+  round(avg(result), 1) as Avg
+from
+  subject 
+  join enrollee_subject on subject.subject_id = enrollee_subject.subject_id
+group by
+  name_subject
+order by
+  name_subject
+  
+/* inner join, groupping and a group condition */
+select
+  name_program
+from 
+  program 
+  join program_subject on program.program_id = program_subject.program_id
+group by
+  name_program
+having 
+  min(min_result) >= 40
+order by
+  name_program
+
 
