@@ -460,3 +460,17 @@ order by
   rand() 
 limit 
   3
+
+/* selecting MAX value with a subquery  */
+select
+  name_program,
+  plan
+from
+  program 
+where
+  plan = (
+  	select
+  	  max(plan)
+  	from
+  	  program
+  	)
