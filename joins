@@ -561,4 +561,90 @@ having
 order by
   name_program
 
+/* left joins, groupping and IF() function */
+select
+  name_enrollee,
+  if(sum(bonus) is null, 0, sum(bonus)) as Bonus
+from
+  enrollee 
+  left join enrollee_achievement on enrollee.enrollee_id = enrollee_achievement.enrollee_id
+  left join achievement on enrollee_achievement.achievement_id = achievement.achievement_id
+group by
+  name_enrollee
+order by
+  name_enrollee
+
+/* inner joins, groupping and math functions */
+select
+  name_department,
+  name_program,
+  plan,
+  count(enrollee_id) as Amount,
+  round((count(enrollee_id) / plan), 2) as Person_per_place
+from
+  department
+  join program on department.department_id = program.department_id
+  join program_enrollee on program.program_id = program_enrollee.program_id
+group by
+  name_department,
+  name_program,
+  plan
+order by
+  Person_per_place desc
+
+/* inner joins, groupping, conditions and math functions */
+select
+  name_program
+from
+  program 
+  join program_subject on program.program_id = program_subject.program_id
+  join subject on program_subject.subject_id = subject.subject_id
+where
+  name_subject in ('Informatics', 'Mathematics')
+group by
+  name_program
+having
+  count(distinct name_subject) = 2
+order by
+  name_program
+
+/* multiple inner joins, groupping and calculations */
+select
+  name_program,
+  name_enrollee,
+  sum(result) as Summary
+from
+  enrollee
+  join program_enrollee on enrollee.enrollee_id = program_enrollee.enrollee_id
+  join program on program_enrollee.program_id = program.program_id
+  join program_subject on program.program_id = program_subject.program_id
+  join subject on program_subject.subject_id = subject.subject_id
+  join enrollee_subject on subject.subject_id = enrollee_subject.subject_id 
+  and enrollee_subject.enrollee_id = enrollee.enrollee_id
+group by
+  name_program,
+  name_enrollee
+order by
+  name_program,
+  Summary desc
+
+/* multiple inner joins, groupping and a condition */
+select
+  name_program,
+  name_enrollee
+from
+  program_enrollee
+  join program on program_enrollee.program_id = program.program_id
+  join enrollee on program_enrollee.enrollee_id = enrollee.enrollee_id
+  join program_subject on program.program_id = program_subject.program_id
+  join enrollee_subject on enrollee.enrollee_id = enrollee_subject.enrollee_id
+  and program_subject.subject_id = enrollee_subject.subject_id
+where
+  result < min_result
+group by
+  name_program,
+  name_enrollee
+order by
+  name_program,
+  name_enrollee
 
