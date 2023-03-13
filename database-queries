@@ -707,4 +707,24 @@ delete from
 where 
   date_attempt < '2020-05-01'
 
+/* creating a table from a SELECT statement with a JOIN clause   */
+create table applicant as
+select
+  program_enrollee.program_id,
+  program_enrollee.enrollee_id,
+  sum(result) as Summary
+from
+  program_enrollee
+  join program_subject on program_enrollee.program_id = program_subject.program_id
+  join enrollee_subject on program_subject.subject_id = enrollee_subject.subject_id 
+  and enrollee_subject.enrollee_id = program_enrollee.enrollee_id
+group by
+  program_enrollee.program_id,
+  program_enrollee.enrollee_id
+order by
+  program_enrollee.program_id,
+  Summary desc
+
 /*   */
+
+
