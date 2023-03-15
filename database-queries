@@ -748,6 +748,25 @@ where
       program_enrollee.enrollee_id
   )
 
+/* updating values from a JOINed table  */
+update 
+  applicant 
+  join (
+    select 
+      enrollee_id, 
+      if(sum(bonus) is null, 0, sum(bonus)) as bonus 
+    from 
+      enrollee_achievement 
+      left join achievement on enrollee_achievement.achievement_id = achievement.achievement_id 
+    group by 
+      enrollee_id
+  ) t 
+set 
+  itog = itog + t.bonus 
+where 
+  applicant.enrollee_id = t.enrollee_id
+
 /*   */
+
 
 
