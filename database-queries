@@ -766,7 +766,21 @@ set
 where 
   applicant.enrollee_id = t.enrollee_id
 
+/* creating an ordered table from another table and deleting the last table */
+create table applicant_order as 
+select 
+  * 
+from 
+  applicant 
+order by 
+  program_id, 
+  itog desc;
+drop 
+  table applicant;
+
 /*   */
+
+
 
 
 
