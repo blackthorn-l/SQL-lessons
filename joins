@@ -648,3 +648,26 @@ order by
   name_program,
   name_enrollee
 
+/* inner join, groupping and DATEADD() function */
+select 
+  customers.customer_name, 
+  count(orders.order_id) as order_count 
+from 
+  customers 
+  join orders on customers.customer_id = orders.customer_id 
+where 
+  customers.country = 'USA' 
+  and orders.order_date >= (
+    select 
+      dateadd(
+        year, 
+        -1, 
+        getdate()
+      )
+  ) -- subquery to retrieve orders within the last year
+group by 
+  customers.customer_name 
+order by 
+  order_count desc
+
+/*  */
