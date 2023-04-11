@@ -1,673 +1,515 @@
 /* a simple join from a Coursera course */
-select 
-  distinct artist.name, 
-  genre.name 
-from 
-  artist 
-  join album on artist.artist_id = album.artist_id 
-  join track on album.album_id = track.album_id 
-  join genre on track.genre_id = genre.genre_id 
-where 
-  artist.name = 'AC/DC'
+SELECT DISTINCT artist.NAME,
+                genre.NAME
+FROM   artist
+       JOIN album
+         ON artist.artist_id = album.artist_id
+       JOIN track
+         ON album.album_id = track.album_id
+       JOIN genre
+         ON track.genre_id = genre.genre_id
+WHERE  artist.NAME = 'AC/DC' 
 
 /* a simple inner join from a Stepic course */
-select 
-  book.title, 
-  genre.name_genre, 
-  book.price 
-from 
-  book 
-  inner join genre on book.genre_id = genre.genre_id 
-where 
-  book.amount > 8 
-order by 
-  book.price desc
+SELECT book.title,
+       genre.name_genre,
+       book.price
+FROM   book
+       INNER JOIN genre
+               ON book.genre_id = genre.genre_id
+WHERE  book.amount > 8
+ORDER  BY book.price DESC 
 
 /* a simple left join */
-select 
-  genre.name_genre 
-from 
-  genre 
-  left join book on genre.genre_id = book.genre_id 
-where 
-  book.genre_id is null
+SELECT genre.name_genre
+FROM   genre
+       LEFT JOIN book
+              ON genre.genre_id = book.genre_id
+WHERE  book.genre_id IS NULL 
 
 /* a cross join and random date generator for 2020 (I know it can be done simplier, but it was the first thing I came up with) */
-select 
-  city.name_city, 
-  author.name_author, 
-  date_format(
-    from_unixtime(
-      rand() * (
-        unix_timestamp('2020-12-31') - unix_timestamp('2020-01-01')
-      ) + unix_timestamp('2020-01-01')
-    ), 
-    '%Y-%m-%d'
-  ) as Date 
-from 
-  city 
-  cross join author 
-order by 
-  city.name_city, 
-  Date desc
+SELECT city.name_city,
+       author.name_author,
+       Date_format(From_unixtime(Rand() * ( Unix_timestamp('2020-12-31') - Unix_timestamp('2020-01-01') ) + Unix_timestamp('2020-01-01')), '%Y-%m-%d') AS Date
+FROM   city
+       CROSS JOIN author
+ORDER  BY city.name_city,
+          date DESC 
 
 /* multiple inner-joins */
-select
-  genre.name_genre,
-  book.title,
-  author.name_author
-from
-  genre
-  inner join book on genre.genre_id = book.genre_id
-  inner join author on author.author_id = book.author_id
-where
-  book.genre_id = 1
-order by
-  book.title
+SELECT genre.name_genre,
+       book.title,
+       author.name_author
+FROM   genre
+       INNER JOIN book
+               ON genre.genre_id = book.genre_id
+       INNER JOIN author
+               ON author.author_id = book.author_id
+WHERE  book.genre_id = 1
+ORDER  BY book.title 
 
 /* left join with grouping */
-select 
-  author.name_author, 
-  sum(book.amount) as Amount 
-from 
-  author 
-  left join book on author.author_id = book.author_id 
-group by 
-  author.name_author 
-having 
-  sum(book.amount) < 10 
-  or count(book.title) = 0 
-order by 
-  Amount
+SELECT author.name_author,
+       Sum(book.amount) AS Amount
+FROM   author
+       LEFT JOIN book
+              ON author.author_id = book.author_id
+GROUP  BY author.name_author
+HAVING Sum(book.amount) < 10
+        OR Count(book.title) = 0
+ORDER  BY amount 
 
 /* inner joins with subquery */
-select 
-  book.title, 
-  author.name_author, 
-  genre.name_genre, 
-  book.price, 
-  book.amount 
-from 
-  book 
-  inner join author on author.author_id = book.author_id 
-  inner join genre on genre.genre_id = book.genre_id 
-where 
-  book.genre_id in (
-    select 
-      query_all_genres.genre_id 
-    from 
-      (
-        select 
-          genre_id, 
-          sum(amount) as genre_amount 
-        from 
-          book 
-        group by 
-          genre_id
-      ) query_all_genres 
-      inner join (
-        select 
-          genre_id, 
-          sum(amount) as max_amount 
-        from 
-          book 
-        group by 
-          genre_id 
-        limit 
-          1
-      ) query_max_amount on query_all_genres.genre_amount = query_max_amount.max_amount
-  ) 
-order by 
-  book.title
+SELECT book.title,
+       author.name_author,
+       genre.name_genre,
+       book.price,
+       book.amount
+FROM   book
+       INNER JOIN author
+               ON author.author_id = book.author_id
+       INNER JOIN genre
+               ON genre.genre_id = book.genre_id
+WHERE  book.genre_id IN (SELECT query_all_genres.genre_id
+                         FROM   (SELECT genre_id,
+                                        Sum(amount) AS genre_amount
+                                 FROM   book
+                                 GROUP  BY genre_id) query_all_genres
+                                INNER JOIN (SELECT genre_id,
+                                                   Sum(amount) AS max_amount
+                                            FROM   book
+                                            GROUP  BY genre_id
+                                            LIMIT  1) query_max_amount
+                                        ON query_all_genres.genre_amount =
+                                           query_max_amount.max_amount)
+ORDER  BY book.title 
 
 /* an example of combined use of ON and USING clause */
-select 
-  supply.title as title, 
-  supply.author as author, 
-  (supply.amount + book.amount) as total_amount
-from 
-  supply 
-  inner join book using(price) 
-  inner join author on book.author_id = author.author_id
+SELECT supply.title                    AS title,
+       supply.author                   AS author,
+       ( supply.amount + book.amount ) AS total_amount
+FROM   supply
+       INNER JOIN book using(price)
+       INNER JOIN author
+               ON book.author_id = author.author_id 
 
 /* an example of diffrent JOIN uses in one query */
-select
-  author.name_author as author,
-  genre.name_genre as genre,
-  count(book.title) as number_of_books
-from
-  author cross join genre
-  left join book on book.author_id = author.author_id
-  and book.genre_id = genre.genre_id
-group by
-  author, 
-  genre
-order by 
-  author,
-  genre,
-  number_of_books
+SELECT author.name_author AS author,
+       genre.name_genre   AS genre,
+       Count(book.title)  AS number_of_books
+FROM   author
+       CROSS JOIN genre
+       LEFT JOIN book
+              ON book.author_id = author.author_id
+                 AND book.genre_id = genre.genre_id
+GROUP  BY author,
+          genre
+ORDER  BY author,
+          genre,
+          number_of_books 
 
 /* three inner joins */
-select
-  buy_id,
-  book.title,
-  book.price,
-  buy_book.amount
-from
-  buy
-  inner join buy_book using(buy_id)
-  inner join book using(book_id)
-  inner join client using(client_id)
-where
-  client.name_client like 'Baranov Pavel'
-order by 
-  buy_id, 
-  book.title
+SELECT buy_id,
+       book.title,
+       book.price,
+       buy_book.amount
+FROM   buy
+       INNER JOIN buy_book using(buy_id)
+       INNER JOIN book using(book_id)
+       INNER JOIN client using(client_id)
+WHERE  client.name_client LIKE 'Baranov Pavel'
+ORDER  BY buy_id,
+          book.title 
 
 /* inner join, left join and COUNT() function */
-select
-  author.name_author,
-  title,
-  count(buy_book.book_id) as Amount
-from
-  book
-  inner join author using(author_id)
-  left join buy_book using(book_id)
-group by
-  title,
-  author.name_author
-order by 
-  author.name_author,
-  title
+SELECT author.name_author,
+       title,
+       Count(buy_book.book_id) AS Amount
+FROM   book
+       INNER JOIN author using(author_id)
+       LEFT JOIN buy_book using(book_id)
+GROUP  BY title,
+          author.name_author
+ORDER  BY author.name_author,
+          title 
 
 /* several inner joins and COUNT() function */
-select 
-  name_city, 
-  count(name_city) as Amount 
-from 
-  city 
-  inner join client using(city_id) 
-  inner join buy using(client_id) 
-group by 
-  name_city
+SELECT name_city,
+       Count(name_city) AS Amount
+FROM   city
+       INNER JOIN client using(city_id)
+       INNER JOIN buy using(client_id)
+GROUP  BY name_city 
 
 /* an inner join with several conditions */
-select 
-  buy_id, 
-  date_step_end 
-from 
-  buy_step 
-  inner join step using(step_id) 
-where 
-  date_step_end is not null 
-  and name_step like 'Payment'
+SELECT buy_id,
+       date_step_end
+FROM   buy_step
+       INNER JOIN step using(step_id)
+WHERE  date_step_end IS NOT NULL
+       AND name_step LIKE 'Payment' 
 
 /* three inner joins, SUM() function and groupping */
-select
-  buy_book.buy_id,
-  client.name_client,
-  sum(buy_book.amount * book.price) as Cost
-from
-  buy_book
-  inner join book using(book_id)
-  inner join buy using(buy_id)
-  inner join client using(client_id)
-group by
-  buy_book.buy_id,
-  client.name_client
-order by
-  buy_book.buy_id
+SELECT buy_book.buy_id,
+       client.name_client,
+       Sum(buy_book.amount * book.price) AS Cost
+FROM   buy_book
+       INNER JOIN book using(book_id)
+       INNER JOIN buy using(buy_id)
+       INNER JOIN client using(client_id)
+GROUP  BY buy_book.buy_id,
+          client.name_client
+ORDER  BY buy_book.buy_id 
 
 /* an inner join and several conditions */
-select 
-  buy_id, 
-  name_step 
-from 
-  buy_step 
-  inner join step using(step_id) 
-where 
-  date_step_beg is not null 
-  and date_step_end is null 
-order by 
-  buy_id
+SELECT buy_id,
+       name_step
+FROM   buy_step
+       INNER JOIN step using(step_id)
+WHERE  date_step_beg IS NOT NULL
+       AND date_step_end IS NULL
+ORDER  BY buy_id 
 
 /* four inner joins, several conditions and DATEDIFF() function */
-select 
-  buy_step.buy_id, 
-  datediff(
-    buy_step.date_step_end, buy_step.date_step_beg
-  ) as Delivery_days, 
-  if(
-    datediff(
-      buy_step.date_step_end, buy_step.date_step_beg
-    ) > city.days_delivery, 
-    (
-      datediff(
-        buy_step.date_step_end, buy_step.date_step_beg
-      ) - city.days_delivery
-    ), 
-    0
-  ) as Late_days
-from 
-  buy_step 
-  inner join step using(step_id) 
-  inner join buy using(buy_id) 
-  inner join client using(client_id) 
-  inner join city using(city_id) 
-where 
-  step.name_step like 'Transportation' 
-  and buy_step.date_step_end is not null 
-order by 
-  buy_step.buy_id
+SELECT buy_step.buy_id,
+       Datediff(buy_step.date_step_end, buy_step.date_step_beg) AS Delivery_days,
+       IF(Datediff(buy_step.date_step_end, buy_step.date_step_beg) > city.days_delivery,
+       ( Datediff(buy_step.date_step_end, buy_step.date_step_beg) - city.days_delivery), 0) AS Late_days
+FROM   buy_step
+       inner join step USING(step_id)
+       inner join buy USING(buy_id)
+       inner join client USING(client_id)
+       inner join city USING(city_id)
+WHERE  step.name_step LIKE 'Transportation'
+       AND buy_step.date_step_end IS NOT NULL
+ORDER  BY buy_step.buy_id 
 
 /* four inner joins and a condition */
-select
-  distinct name_client
-from
-  buy_book
-  inner join buy using(buy_id)
-  inner join client using(client_id)
-  inner join book using(book_id)
-  inner join author using(author_id)
-where
-  name_author like 'Dostoevsky'
-order by 
-  name_client
+SELECT DISTINCT name_client
+FROM   buy_book
+       INNER JOIN buy using(buy_id)
+       INNER JOIN client using(client_id)
+       INNER JOIN book using(book_id)
+       INNER JOIN author using(author_id)
+WHERE  name_author LIKE 'Dostoevsky'
+ORDER  BY name_client 
 
 /* joins, groupping and a subquery */
-select 
-  name_genre, 
-  sum(buy_book.amount) as books_amount 
-from 
-  genre 
-  inner join book using(genre_id) 
-  inner join buy_book using(book_id) 
-group by 
-  name_genre 
-having 
-  sum(buy_book.amount) = (
-    select 
-      max(ordered_amount) 
-    from 
-      (
-        select 
-          sum(buy_book.amount) as ordered_amount 
-        from 
-          genre 
-          join book using(genre_id) 
-          join buy_book using(book_id) 
-        group by 
-          name_genre
-      ) query_1
-  ) 
-order by 
-  books_amount desc
+SELECT name_genre,
+       Sum(buy_book.amount) AS books_amount
+FROM   genre
+       INNER JOIN book using(genre_id)
+       INNER JOIN buy_book using(book_id)
+GROUP  BY name_genre
+HAVING Sum(buy_book.amount) = (SELECT Max(ordered_amount)
+                               FROM   (SELECT Sum(buy_book.amount) AS ordered_amount
+                                       FROM   genre
+                                              JOIN book using(genre_id)
+                                              JOIN buy_book using(book_id)
+                                       GROUP  BY name_genre) query_1)
+ORDER  BY books_amount DESC 
 
 /* joins, groupping, a subquery and UNION ALL opeartor */
-select 
-  year(date_payment) as Year, 
-  monthname(date_payment) as Month, 
-  sum(price * amount) as Sum 
-from 
-  buy_archive 
-group by 
-  year(date_payment), 
-  monthname(date_payment) 
-union all 
-select 
-  year(date_step_end) as Year, 
-  monthname(date_step_end) as Month, 
-  sum(buy_book.amount * book.price) as Sum 
-from 
-  buy_step 
-  join buy using(buy_id) 
-  join buy_book using(buy_id) 
-  join book using(book_id) 
-where 
-  date_step_end is not null 
-  and step_id in (
-    select 
-      step_id 
-    from 
-      step 
-    where 
-      name_step like 'Payment'
-  ) 
-group by 
-  year(date_step_end), 
-  monthname(date_step_end) 
-order by 
-  Month, 
-  Year
+SELECT Year(date_payment)      AS Year,
+       Monthname(date_payment) AS Month,
+       Sum(price * amount)     AS Sum
+FROM   buy_archive
+GROUP  BY Year(date_payment),
+          Monthname(date_payment)
+UNION ALL
+SELECT Year(date_step_end)               AS Year,
+       Monthname(date_step_end)          AS Month,
+       Sum(buy_book.amount * book.price) AS Sum
+FROM   buy_step
+       JOIN buy using(buy_id)
+       JOIN buy_book using(buy_id)
+       JOIN book using(book_id)
+WHERE  date_step_end IS NOT NULL
+       AND step_id IN (SELECT step_id
+                       FROM   step
+                       WHERE  name_step LIKE 'Payment')
+GROUP  BY Year(date_step_end),
+          Monthname(date_step_end)
+ORDER  BY month,
+          year 
 
 /* joins, groupping, a subquery and UNION ALL opeartor */
-select 
-  query_1.title, 
-  sum(query_1.Amount) as Amount, 
-  sum(query_1.Sum) as Sum 
-from 
-  (
-    select 
-      title, 
-      sum(buy_book.amount) as Amount, 
-      sum(buy_book.amount * price) as Sum 
-    from 
-      book 
-      join buy_book using(book_id) 
-      join buy using(buy_id) 
-      join buy_step using(buy_id) 
-    where 
-      date_step_end is not null 
-      and step_id in (
-        select 
-          step_id 
-        from 
-          step 
-        where 
-          name_step like 'Payment'
-      ) 
-    group by 
-      title 
-    union all 
-    select 
-      title, 
-      sum(buy_archive.amount) as Amount, 
-      sum(buy_archive.price * buy_archive.amount) as Sum 
-    from 
-      buy_archive 
-      join book using(book_id) 
-    group by 
-      title
-  ) query_1 
-group by 
-  query_1.title 
-order by 
-  Sum desc
+SELECT query_1.title,
+       Sum(query_1.amount) AS Amount,
+       Sum(query_1.sum)    AS Sum
+FROM   (SELECT title,
+               Sum(buy_book.amount)         AS Amount,
+               Sum(buy_book.amount * price) AS Sum
+        FROM   book
+               JOIN buy_book using(book_id)
+               JOIN buy using(buy_id)
+               JOIN buy_step using(buy_id)
+        WHERE  date_step_end IS NOT NULL
+               AND step_id IN (SELECT step_id
+                               FROM   step
+                               WHERE  name_step LIKE 'Payment')
+        GROUP  BY title
+        UNION ALL
+        SELECT title,
+               Sum(buy_archive.amount)                     AS Amount,
+               Sum(buy_archive.price * buy_archive.amount) AS Sum
+        FROM   buy_archive
+               JOIN book using(book_id)
+        GROUP  BY title) query_1
+GROUP  BY query_1.title
+ORDER  BY sum DESC 
 
 /* joins and a condition */
-select
-  name_student,
-  date_attempt,
-  result
-from
-  student
-  join attempt on student.student_id = attempt.student_id
-  join subject on subject.subject_id = attempt.subject_id
-where
-  name_subject like 'Databases'
-order by
-  result desc
+SELECT name_student,
+       date_attempt,
+       result
+FROM   student
+       JOIN attempt
+         ON student.student_id = attempt.student_id
+       JOIN subject
+         ON subject.subject_id = attempt.subject_id
+WHERE  name_subject LIKE 'Databases'
+ORDER  BY result DESC 
   
 /* a left join and groupping */
-select
-  name_subject,
-  count(attempt_id) as Total_tries,
-  round(avg(attempt.result), 2) as Avg
-from 
-  subject
-  left join attempt on subject.subject_id = attempt.subject_id
-group by
-  name_subject
-order by
-  Avg desc
+SELECT name_subject,
+       Count(attempt_id)             AS Total_tries,
+       Round(Avg(attempt.result), 2) AS Avg
+FROM   subject
+       LEFT JOIN attempt
+              ON subject.subject_id = attempt.subject_id
+GROUP  BY name_subject
+ORDER  BY avg DESC 
 
 /* joins and a condition with a subquery */
-select 
-  name_student, 
-  result 
-from 
-  attempt 
-  join student on attempt.student_id = student.student_id 
-where 
-  result = (
-    select 
-      max(result) 
-    from 
-      attempt
-  ) 
-order by 
-  name_student
+SELECT name_student,
+       result
+FROM   attempt
+       JOIN student
+         ON attempt.student_id = student.student_id
+WHERE  result = (SELECT Max(result)
+                 FROM   attempt)
+ORDER  BY name_student 
 
 /* joins, groupping and DATEDIFF() function */
-select
-  name_student,
-  name_subject,
-  datediff(max(date_attempt), min(date_attempt)) as Days_count
-from
-  attempt 
-  join subject on attempt.subject_id = subject.subject_id
-  join student on attempt.student_id = student.student_id
-group by
-  name_student,
-  name_subject
-having
-  count(attempt_id) > 1
-order by
-  Days_count
+SELECT name_student,
+       name_subject, Datediff(Max(date_attempt), Min(date_attempt)) AS
+days_count
+FROM   attempt
+       JOIN subject
+         ON attempt.subject_id = subject.subject_id
+       JOIN student
+         ON attempt.student_id = student.student_id
+
+GROUP BY name_student, name_subject
+HAVING Count(attempt_id) > 1 ORDER  BY days_count 
 
 /* left join and groupping */
-select
-  name_subject,
-  count(distinct student_id) as Amount
-from 
-  subject
-  left join attempt on attempt.subject_id = subject.subject_id
-group by
-  name_subject
-order by
-  Amount desc,
-  name_subject
+SELECT name_subject,
+       Count(DISTINCT student_id) AS Amount
+FROM   subject
+       LEFT JOIN attempt
+              ON attempt.subject_id = subject.subject_id
+GROUP  BY name_subject
+ORDER  BY amount DESC,
+          name_subject 
   
 /* inner joins, IF() clause and a condition */
-select
-  name_question,
-  name_answer,
-  if(is_correct = 0, 'Wrong', 'Correct') as Result
-from
-  testing
-  join question on testing.question_id = question.question_id
-  join answer on testing.answer_id = answer.answer_id
-where
-  attempt_id = 7
+SELECT name_question,
+       name_answer,
+       IF(is_correct = 0, 'Wrong', 'Correct') AS Result
+FROM   testing
+       join question
+         ON testing.question_id = question.question_id
+       join answer
+         ON testing.answer_id = answer.answer_id
+WHERE  attempt_id = 7 
   
 /* inner joins, calculations and groupping */
-select
-  name_student,
-  name_subject,
-  date_attempt,
-  round(sum(is_correct) / 3 * 100, 2) as Result
-from
-  attempt
-  join subject on attempt.subject_id = subject.subject_id
-  join student on attempt.student_id = student.student_id
-  join testing on testing.attempt_id = attempt.attempt_id
-  join answer on testing.answer_id = answer.answer_id
-group by
-  name_student,
-  name_subject,
-  date_attempt
-order by
-  name_student,
-  date_attempt desc
+SELECT name_student,
+       name_subject,
+       date_attempt,
+       Round(Sum(is_correct) / 3 * 100, 2) AS Result
+FROM   attempt
+       JOIN subject
+         ON attempt.subject_id = subject.subject_id
+       JOIN student
+         ON attempt.student_id = student.student_id
+       JOIN testing
+         ON testing.attempt_id = attempt.attempt_id
+       JOIN answer
+         ON testing.answer_id = answer.answer_id
+GROUP  BY name_student,
+          name_subject,
+          date_attempt
+ORDER  BY name_student,
+          date_attempt DESC 
   
 /* inner joins, left join, calculations, CONCAT() function and groupping */
-select
-  name_subject,
-  concat(substring(name_question, 1, 30),'...') as Question,
-  count(testing.answer_id) as Total_answers,
-  round(sum(is_correct) / count(testing.answer_id) * 100, 2)  as Successful_tries
-from 
-  subject
-  join question on subject.subject_id = question.subject_id
-  join testing on question.question_id = testing.question_id
-  left join answer on testing.answer_id = answer.answer_id
-group by
-  name_subject,
-  name_question
-order by
-  name_subject,
-  Successful_tries desc,
-  name_question
+SELECT name_subject,
+       Concat(Substring(name_question, 1, 30), '...')             AS Question,
+       Count(testing.answer_id)                                   AS
+       Total_answers,
+       Round(Sum(is_correct) / Count(testing.answer_id) * 100, 2) AS
+       Successful_tries
+FROM   subject
+       JOIN question
+         ON subject.subject_id = question.subject_id
+       JOIN testing
+         ON question.question_id = testing.question_id
+       LEFT JOIN answer
+              ON testing.answer_id = answer.answer_id
+GROUP  BY name_subject,
+          name_question
+ORDER  BY name_subject,
+          successful_tries DESC,
+          name_question 
   
 /* inner joins and a condition */
-select
-  name_enrollee
-from
-  enrollee
-  join program_enrollee on enrollee.enrollee_id = program_enrollee.enrollee_id
-  join program on program_enrollee.program_id = program.program_id
-where
-  name_program like 'Mechatronics and Robotics'
-order by
-  name_enrollee
+SELECT name_enrollee
+FROM   enrollee
+       JOIN program_enrollee
+         ON enrollee.enrollee_id = program_enrollee.enrollee_id
+       JOIN program
+         ON program_enrollee.program_id = program.program_id
+WHERE  name_program LIKE 'Mechatronics and Robotics'
+ORDER  BY name_enrollee 
 
 /* inner joins and a condition */
-select
-  name_program
-from
-  program 
-  join program_subject on program.program_id = program_subject.program_id
-  join subject on program_subject.subject_id = subject.subject_id
-where
-  name_subject like 'Informatics'
-order by
-  name_program desc
+SELECT name_program
+FROM   program
+       JOIN program_subject
+         ON program.program_id = program_subject.program_id
+       JOIN subject
+         ON program_subject.subject_id = subject.subject_id
+WHERE  name_subject LIKE 'Informatics'
+ORDER  BY name_program DESC 
 
 /* inner join, calculations and groupping */
-select
-  name_subject,
-  count(enrollee_id) as Amount,
-  max(result) as Max,
-  min(result) as Min,
-  round(avg(result), 1) as Avg
-from
-  subject 
-  join enrollee_subject on subject.subject_id = enrollee_subject.subject_id
-group by
-  name_subject
-order by
-  name_subject
+SELECT name_subject,
+       Count(enrollee_id)    AS Amount,
+       Max(result)           AS Max,
+       Min(result)           AS Min,
+       Round(Avg(result), 1) AS Avg
+FROM   subject
+       JOIN enrollee_subject
+         ON subject.subject_id = enrollee_subject.subject_id
+GROUP  BY name_subject
+ORDER  BY name_subject 
   
 /* inner join, groupping and a group condition */
-select
-  name_program
-from 
-  program 
-  join program_subject on program.program_id = program_subject.program_id
-group by
-  name_program
-having 
-  min(min_result) >= 40
-order by
-  name_program
+SELECT name_program
+FROM   program
+       JOIN program_subject
+         ON program.program_id = program_subject.program_id
+GROUP  BY name_program
+HAVING Min(min_result) >= 40
+ORDER  BY name_program 
 
 /* left joins, groupping and IF() function */
-select
-  name_enrollee,
-  if(sum(bonus) is null, 0, sum(bonus)) as Bonus
-from
-  enrollee 
-  left join enrollee_achievement on enrollee.enrollee_id = enrollee_achievement.enrollee_id
-  left join achievement on enrollee_achievement.achievement_id = achievement.achievement_id
-group by
-  name_enrollee
-order by
-  name_enrollee
+SELECT name_enrollee,
+       IF(SUM(bonus) IS NULL, 0, SUM(bonus)) AS Bonus
+FROM   enrollee
+       left join enrollee_achievement
+              ON enrollee.enrollee_id = enrollee_achievement.enrollee_id
+       left join achievement
+              ON enrollee_achievement.achievement_id =
+                 achievement.achievement_id
+GROUP  BY name_enrollee
+ORDER  BY name_enrollee 
 
 /* inner joins, groupping and math functions */
-select
-  name_department,
-  name_program,
-  plan,
-  count(enrollee_id) as Amount,
-  round((count(enrollee_id) / plan), 2) as Person_per_place
-from
-  department
-  join program on department.department_id = program.department_id
-  join program_enrollee on program.program_id = program_enrollee.program_id
-group by
-  name_department,
-  name_program,
-  plan
-order by
-  Person_per_place desc
+SELECT name_department,
+       name_program,
+       PLAN,
+       Count(enrollee_id)                      AS Amount,
+       Round(( Count(enrollee_id) / PLAN ), 2) AS Person_per_place
+FROM   department
+       JOIN program
+         ON department.department_id = program.department_id
+       JOIN program_enrollee
+         ON program.program_id = program_enrollee.program_id
+GROUP  BY name_department,
+          name_program,
+          PLAN
+ORDER  BY person_per_place DESC 
 
 /* inner joins, groupping, conditions and math functions */
-select
-  name_program
-from
-  program 
-  join program_subject on program.program_id = program_subject.program_id
-  join subject on program_subject.subject_id = subject.subject_id
-where
-  name_subject in ('Informatics', 'Mathematics')
-group by
-  name_program
-having
-  count(distinct name_subject) = 2
-order by
-  name_program
+SELECT name_program
+FROM   program
+       JOIN program_subject
+         ON program.program_id = program_subject.program_id
+       JOIN subject
+         ON program_subject.subject_id = subject.subject_id
+WHERE  name_subject IN ( 'Informatics', 'Mathematics' )
+GROUP  BY name_program
+HAVING Count(DISTINCT name_subject) = 2
+ORDER  BY name_program 
 
 /* multiple inner joins, groupping and calculations */
-select
-  name_program,
-  name_enrollee,
-  sum(result) as Summary
-from
-  enrollee
-  join program_enrollee on enrollee.enrollee_id = program_enrollee.enrollee_id
-  join program on program_enrollee.program_id = program.program_id
-  join program_subject on program.program_id = program_subject.program_id
-  join subject on program_subject.subject_id = subject.subject_id
-  join enrollee_subject on subject.subject_id = enrollee_subject.subject_id 
-  and enrollee_subject.enrollee_id = enrollee.enrollee_id
-group by
-  name_program,
-  name_enrollee
-order by
-  name_program,
-  Summary desc
+SELECT name_program,
+       name_enrollee,
+       Sum(result) AS Summary
+FROM   enrollee
+       JOIN program_enrollee
+         ON enrollee.enrollee_id = program_enrollee.enrollee_id
+       JOIN program
+         ON program_enrollee.program_id = program.program_id
+       JOIN program_subject
+         ON program.program_id = program_subject.program_id
+       JOIN subject
+         ON program_subject.subject_id = subject.subject_id
+       JOIN enrollee_subject
+         ON subject.subject_id = enrollee_subject.subject_id
+            AND enrollee_subject.enrollee_id = enrollee.enrollee_id
+GROUP  BY name_program,
+          name_enrollee
+ORDER  BY name_program,
+          summary DESC 
 
 /* multiple inner joins, groupping and a condition */
-select
-  name_program,
-  name_enrollee
-from
-  program_enrollee
-  join program on program_enrollee.program_id = program.program_id
-  join enrollee on program_enrollee.enrollee_id = enrollee.enrollee_id
-  join program_subject on program.program_id = program_subject.program_id
-  join enrollee_subject on enrollee.enrollee_id = enrollee_subject.enrollee_id
-  and program_subject.subject_id = enrollee_subject.subject_id
-where
-  result < min_result
-group by
-  name_program,
-  name_enrollee
-order by
-  name_program,
-  name_enrollee
+SELECT name_program,
+       name_enrollee
+FROM   program_enrollee
+       JOIN program
+         ON program_enrollee.program_id = program.program_id
+       JOIN enrollee
+         ON program_enrollee.enrollee_id = enrollee.enrollee_id
+       JOIN program_subject
+         ON program.program_id = program_subject.program_id
+       JOIN enrollee_subject
+         ON enrollee.enrollee_id = enrollee_subject.enrollee_id
+            AND program_subject.subject_id = enrollee_subject.subject_id
+WHERE  result < min_result
+GROUP  BY name_program,
+          name_enrollee
+ORDER  BY name_program,
+          name_enrollee 
 
 /* inner join, groupping and DATEADD() function */
-select 
-  customers.customer_name, 
-  count(orders.order_id) as order_count 
-from 
-  customers 
-  join orders on customers.customer_id = orders.customer_id 
-where 
-  customers.country = 'USA' 
-  and orders.order_date >= (
-    select 
-      dateadd(
-        year, 
-        -1, 
-        getdate()
-      )
-  ) -- subquery to retrieve orders within the last year
-group by 
-  customers.customer_name 
-order by 
-  order_count desc
+SELECT customers.customer_name,
+       Count(orders.order_id) AS order_count
+FROM   customers
+       JOIN orders
+         ON customers.customer_id = orders.customer_id
+WHERE  customers.country = 'USA'
+       AND orders.order_date >= (SELECT Dateadd(year, -1, Getdate()))
+-- subquery to retrieve orders within the last year
+GROUP  BY customers.customer_name
+ORDER  BY order_count DESC 
+
+/* work with strings */
+SELECT Concat(LEFT(Concat(m.module_id, ' ', module_name), 16), '...') AS Module,
+       Concat(LEFT(Concat(l.module_id, '.', lesson_position, ' ', lesson_name), 16), '...') AS Lesson,
+       Concat(l.module_id, '.', lesson_position, '.', step_position, ' ', step_name) AS Step
+FROM   module AS m
+       JOIN lesson AS l
+         ON m.module_id = l.module_id
+       JOIN step AS s
+         ON l.lesson_id = s.lesson_id
+WHERE  step_name LIKE '%ложенн% %апрос%'
+ORDER  BY Module,
+          Lesson,
+          Step 
 
 /*  */
